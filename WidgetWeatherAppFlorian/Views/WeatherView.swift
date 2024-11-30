@@ -34,12 +34,40 @@ struct WeatherView: View {
                     .padding()
             }
             
-            if let weatherData = viewModel.storedWeather {
-                // Display weather information here
-                Text("City: \(weatherData.location.name)")
-                Text("Temperature: \(String(format: "%.1f", weatherData.current.tempC))°C")
-                Text("Feels Like: \(String(format: "%.1f", weatherData.current.feelslikeC))°C")
-            } else {
+            if let weatherData = viewModel.currentWeather {
+                            VStack(alignment: .leading, spacing: 10) {
+                                Text("Current Weather for \(weatherData.location.name)")
+                                    .font(.headline)
+                                
+                                Text("Temperature: \(String(format: "%.1f", weatherData.timelines.hourly[0].values.temperature))°C")
+                                
+                                Divider()
+                                
+                                Text("Next 7 Hours Forecast:")
+                                    .font(.subheadline)
+                                    .padding(.top)
+                                
+                                ScrollView(.horizontal, showsIndicators: false) {
+                                    HStack(spacing: 20) {
+                                        ForEach(viewModel.hourlyForecasts, id: \.time) { hourly in
+                                            VStack {
+                                                Text(formatTime(hourly.time))
+                                                    .font(.caption)
+                                                Text("\(String(format: "%.1f", hourly.values.temperature))°C")
+                                                    .font(.body)
+                                                Image(systemName: viewModel.getWeatherIcon(for: hourly.values.weatherCode))
+                                                    .font(.caption)
+                                                    .foregroundColor(.secondary)
+                                            }
+                                            .padding()
+                                            .background(Color.gray.opacity(0.1))
+                                            .cornerRadius(10)
+                                        }
+                                    }
+                                }
+                            }
+                            .padding()
+                        } else {
                 // Display loading indicator or error message
                 if viewModel.isLoading {
                     ProgressView()
@@ -66,6 +94,17 @@ struct WeatherView: View {
         isValidating = false
     }
     
+    private func formatTime(_ timeString: String) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
+        
+        guard let date = formatter.date(from: timeString) else {
+            return timeString
+        }
+        
+        formatter.dateFormat = "HH:mm"
+        return formatter.string(from: date)
+    }
+    
 }
-
 

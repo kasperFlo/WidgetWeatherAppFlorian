@@ -5,43 +5,43 @@
 //  Created by Flrorian Kasperbauer on 2024-11-11.
 //
 import UIKit
- struct WeatherResponse: Codable {
+
+public struct WeatherResponse: Codable {
+    public let timelines: Timelines
     public let location: Location
-    public let current: Current
     
-    public init(location: Location, current: Current) {
+    public init(timelines: Timelines, location: Location) {
+        self.timelines = timelines
         self.location = location
-        self.current = current
     }
 }
 
- struct Location: Codable {
-     let name: String
-     let country: String
-     let region: String?
-     let lat: Double?
-     let lon: Double?
+public struct Timelines: Codable {
+    public let hourly: [HourlyData]
 }
 
- struct Current: Codable {
-     let tempC: Double
-     let condition: Condition
-     let humidity: Int
-     let windKph: Double
-     let feelslikeC: Double
-     let isDay: Int
+public struct HourlyData: Codable {
+    public let time: String
+    public let values: WeatherValues
+}
+
+public struct WeatherValues: Codable {
+    public let temperature: Double
+    public let humidity: Double
+    public let windSpeed: Double
+    public let weatherCode: Int
     
     enum CodingKeys: String, CodingKey {
-        case tempC = "temp_c"
-        case condition
+        case temperature
         case humidity
-        case windKph = "wind_kph"
-        case feelslikeC = "feelslike_c"
-        case isDay = "is_day"
+        case windSpeed
+        case weatherCode
     }
+    
 }
 
-public struct Condition: Codable {
-    public let text: String
-    public let icon: String
+public struct Location: Codable {
+    public let name: String
+    public let lat: Double
+    public let lon: Double
 }
