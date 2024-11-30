@@ -53,11 +53,17 @@ struct WeatherView: View {
                                             VStack {
                                                 Text(formatTime(hourly.time))
                                                     .font(.caption)
+                                                    .padding(0.1)
                                                 Text("\(String(format: "%.1f", hourly.values.temperature))°C")
                                                     .font(.body)
+                                                    .padding(0.1)
+                                                Text("\(String(format: "%.1f", hourly.values.humidity))°%")
+                                                    .font(.body)
+                                                    .padding(0.1)
                                                 Image(systemName: viewModel.getWeatherIcon(for: hourly.values.weatherCode))
                                                     .font(.caption)
                                                     .foregroundColor(.secondary)
+                                                    .padding(0.1)
                                             }
                                             .padding()
                                             .background(Color.gray.opacity(0.1))
